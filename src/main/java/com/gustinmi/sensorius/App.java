@@ -12,12 +12,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class SensoriusApplication {
+public class App {
 	
-	public static final Logger logger = LoggerFactory.getLogger(SensoriusApplication.class);
+	public static final Logger logger = LoggerFactory.getLogger(App.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(SensoriusApplication.class, args);
+		SpringApplication.run(App.class, args);
 	}
 
 	@Bean

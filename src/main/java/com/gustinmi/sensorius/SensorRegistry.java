@@ -1,5 +1,7 @@
 package com.gustinmi.sensorius;
 
+import static com.gustinmi.sensorius.CompilationConstants.INFO_SENSOR_REGISTRY;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,19 +14,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gustinmi.sensorius.SensorData.SensId;
-import static  com.gustinmi.sensorius.CompilationConstants.*;
 
 public class SensorRegistry {
 	
-	public static final Logger logger = LoggerFactory.getLogger(SensoriusApplication.class);
+	public static final Logger logger = LoggerFactory.getLogger(App.class);
 	
     public static final SensorRegistry INSTANCE = new SensorRegistry();
     
-    public static final FlushCondition flushCondition = new MaxAgeMaxSizeCondition(false);
+    public static volatile FlushCondition flushCondition;
     
 	private final Map<SensId, SortedSet<SensorData>> sensors = new HashMap<SensorData.SensId, SortedSet<SensorData>>(1000);
 	
-	private SensorRegistry() {}
+	private SensorRegistry() {
+		flushCondition = new MaxAgeMaxSizeCondition(false);
+	}
+	
+	public void initialize(boolean shouldFlush)	{
+		if (shouldFlush) {
+			logger.warn("Turning on flush mode");
+			flushCondition = new MaxAgeMaxSizeCondition(true);
+		}
+	}
 	
 	
 	/** Add new sensor reading from kafka consumer
@@ -42,23 +52,25 @@ public class SensorRegistry {
 			
 			if (INFO_SENSOR_REGISTRY) logger.info("Sensor {} already present, adding reading", sensData.getId().toString());
 			
-			final SortedSet<SensorData> dataSet = sensors.get(sensData.getId());
-			dataSet.add(sensData);
+			final SortedSet<SensorData> readingsData = sensors.get(sensData.getId());
+			readingsData.add(sensData);
+			
+			if (INFO_SENSOR_REGISTRY) logger.info("Sensor has {} readings", readingsData.size());
 			
 			// Check if we need to flush data
 			long currReadingTsMs = sensData.getTimestamp();
-			long firstReadingTsMs = dataSet.first().getTimestamp();
-			final boolean shouldFlush = flushCondition.shouldFlush(dataSet.size(), firstReadingTsMs, currReadingTsMs);
+			long firstReadingTsMs = readingsData.first().getTimestamp();
+			final boolean shouldFlush = flushCondition.shouldFlush(readingsData.size(), firstReadingTsMs, currReadingTsMs);
 			if (!shouldFlush) return;
 
 			logger.info("Flushing sensor data for {}", sensData.getId().toString());
 			
 			// we are going to empty buffer for sensor	
 			final SortedSet<SensorData> copyOfDataset; // work with a copy of the list, so we don't deadlock
-			synchronized (dataSet) { //TODO check threading
-				copyOfDataset = new TreeSet<SensorData>(dataSet);
+			synchronized (readingsData) { //TODO check threading
+				copyOfDataset = new TreeSet<SensorData>(readingsData);
 			}
-			dataSet.clear(); //TODO check threading 
+			readingsData.clear(); //TODO check threading 
 			
 			// iterate and remove duplicate readings
 			final List<SensorData> uniqList = new ArrayList<SensorData>(10); // start with max possible size
@@ -85,7 +97,7 @@ public class SensorRegistry {
 			
 		} else { // sensor appeared for the first time
 			
-			if (INFO_SENSOR_REGISTRY) logger.info("Adding new sensor {}", sensData.getId().toString());
+			if (INFO_SENSOR_REGISTRY) logger.info("Adding new sensor {} with 1 reading data", sensData.getId().toString());
 			
 			final SortedSet<SensorData> newDataSet = new TreeSet<SensorData>();
 			newDataSet.add(sensData);

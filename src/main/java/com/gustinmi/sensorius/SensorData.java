@@ -18,7 +18,7 @@ public final class SensorData  implements Comparable<SensorData> {
 	private final Float temperature;
 	private final long timestamp;
 	
-	public SensorData(final String longitude, final String latitude, final int elevation, final float temperature, final long timestamp) {
+	private SensorData(final String longitude, final String latitude, final int elevation, final float temperature, final long timestamp) {
 		this.temperature = temperature;
 		this.timestamp = timestamp;
 		this.longitude = longitude;
@@ -29,13 +29,14 @@ public final class SensorData  implements Comparable<SensorData> {
 		
 	}
 	
+	/** factory method for producing sensor data object from raw json string */
 	public static final SensorData fromRaw(final String rawSensData) {
 		// we use gson object deserializer for now. Could choose something more fundamental
 		final SensorData sensDataUnbaked;
 		try {
 			sensDataUnbaked = gson.fromJson(rawSensData, SensorData.class); // this will only call default parameterless constructor
 			return new SensorData(sensDataUnbaked.longitude, sensDataUnbaked.latitude, sensDataUnbaked.elevation, sensDataUnbaked.temperature, sensDataUnbaked.timestamp);
-		} catch (JsonSyntaxException e) {
+		} catch (JsonSyntaxException e) { // we can have anything in kafka data
 			return null; 
 		}
 	}
@@ -53,8 +54,6 @@ public final class SensorData  implements Comparable<SensorData> {
 		return temperature;
 	}
 	
-	
-
 	public long getTimestamp() {
 		return timestamp;
 	}

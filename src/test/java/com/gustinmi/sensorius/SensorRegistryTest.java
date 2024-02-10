@@ -15,35 +15,34 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class SensorRegistryTest {
 
-	public static final Logger logger = LoggerFactory.getLogger(SensoriusApplication.class);
+	public static final Logger logger = LoggerFactory.getLogger(App.class);
 	
 	@BeforeEach 
 	public void setupTest() {
-		SensorRegistry.INSTANCE.clear();	
+		SensorRegistry.INSTANCE.clear();
+		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 0);
 	}
-	
 	
 	@Test
 	public void testClear() {
-		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 0);
-		SensorRegistry.INSTANCE.addSensorReading(SensoriusJsonTests.getSensorReading());
+		
+		SensorRegistry.INSTANCE.addSensorReading(JsonGenerators.getSensorReading());
 		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 1);
 		SensorRegistry.INSTANCE.clear();
 		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 0);
 	}
 	
-	
 	@Test
 	public void testSensorDataSameSensor() {
 		
-		long now = SensoriusJsonTests.currentTimeMillis();
+		long now = SensorDataTests.currentTimeMillis();
 		
-		final String first = SensoriusJsonTests.getSensorReading(now, 200, anyFloat());
+		final String first = JsonGenerators.getSensorReading(now, 200, anyFloat());
 		final SensorData fromRawFirst = SensorData.fromRaw(first);
 		SensorRegistry.INSTANCE.addSensorReading(first);
 		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 1);
 		
-		final String second = SensoriusJsonTests.getSensorReading(now+1000, 200, anyFloat());
+		final String second = JsonGenerators.getSensorReading(now+1000, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(second);
 		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 1);
 		
@@ -53,22 +52,33 @@ public class SensorRegistryTest {
 	}
 	
 	@Test
-	public void testSensorCount() {
-		long now = SensoriusJsonTests.currentTimeMillis();
+	public void testSensorDataInvalid() {
+				
+		final String second = JsonGenerators.getSensorReadingMalformed();
+		SensorRegistry.INSTANCE.addSensorReading(second);
+		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 0);
 		
-		final String first = SensoriusJsonTests.getSensorReading(now, 200, anyFloat());
+		
+	}
+	
+	
+	@Test
+	public void testSensorCount() {
+		long now = SensorDataTests.currentTimeMillis();
+		
+		final String first = JsonGenerators.getSensorReading(now, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(first);
 		
-		final String beforeFirst = SensoriusJsonTests.getSensorReading(now-1000, 200, anyFloat());
+		final String beforeFirst = JsonGenerators.getSensorReading(now-1000, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(beforeFirst);
 		
-		final String beforeBeforeFirst = SensoriusJsonTests.getSensorReading(now-1200, 200, anyFloat());
+		final String beforeBeforeFirst = JsonGenerators.getSensorReading(now-1200, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(beforeBeforeFirst);
 
 		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 1);
 		
 		// adding different sensor
-		final String last = SensoriusJsonTests.getSensorReading();
+		final String last = JsonGenerators.getSensorReading();
 		SensorRegistry.INSTANCE.addSensorReading(last);
 		
 		assertFalse(SensorRegistry.INSTANCE.getSensorCount() == 1);
@@ -78,18 +88,18 @@ public class SensorRegistryTest {
 	
 	@Test
 	public void testOrderingSensorData() {
-		long now = SensoriusJsonTests.currentTimeMillis();
+		long now = SensorDataTests.currentTimeMillis();
 		
-		final String first = SensoriusJsonTests.getSensorReading(now, 200, anyFloat());
+		final String first = JsonGenerators.getSensorReading(now, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(first);
 		final SensorData fromRawFirst = SensorData.fromRaw(first);
 			
 		
-		final String beforeFirst = SensoriusJsonTests.getSensorReading(now-1000, 200, anyFloat());
+		final String beforeFirst = JsonGenerators.getSensorReading(now-1000, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(beforeFirst);
 		final SensorData fromRawBeforeFirst = SensorData.fromRaw(beforeFirst);
 		
-		final String beforeBeforeFirst = SensoriusJsonTests.getSensorReading(now-1200, 200, anyFloat());
+		final String beforeBeforeFirst = JsonGenerators.getSensorReading(now-1200, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(beforeBeforeFirst);
 		final SensorData fromRawBeforeBeforeFirst = SensorData.fromRaw(beforeBeforeFirst);
 		
@@ -106,7 +116,6 @@ public class SensorRegistryTest {
 		assertTrue(sensorData3.equals(fromRawFirst));
 		
 	}
-	
 	
 }
 

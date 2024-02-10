@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class TimeseriesDb {
 	
-	public static final Logger logger = LoggerFactory.getLogger(SensoriusApplication.class);
+	public static final Logger logger = LoggerFactory.getLogger(App.class);
 	
 	public static final TimeseriesDb INSTANCE = new TimeseriesDb();
 		
