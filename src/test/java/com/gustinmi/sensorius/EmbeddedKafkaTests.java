@@ -1,4 +1,4 @@
-package com.naka.app;
+package com.gustinmi.sensorius;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -62,8 +62,6 @@ public class EmbeddedKafkaTests {
         ConsumerRecords<Integer, String> replies = KafkaTestUtils.getRecords(consumer);
         assertThat(replies.count()).isGreaterThanOrEqualTo(1);
     }
-    
-    
     
 	@Test
 	public void testProducer(EmbeddedKafkaBroker embeddedKafka) throws Exception {
