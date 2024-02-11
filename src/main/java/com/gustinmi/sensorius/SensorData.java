@@ -5,6 +5,9 @@ import java.util.Objects;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+/**
+ * Immutable object holding sensor data
+ */
 public final class SensorData  implements Comparable<SensorData> {
 	
 	private static final Gson gson = new Gson();
@@ -32,9 +35,9 @@ public final class SensorData  implements Comparable<SensorData> {
 	/** factory method for producing sensor data object from raw json string */
 	public static final SensorData fromRaw(final String rawSensData) {
 		// we use gson object deserializer for now. Could choose something more fundamental
-		final SensorData sensDataUnbaked;
+		
 		try {
-			sensDataUnbaked = gson.fromJson(rawSensData, SensorData.class); // this will only call default parameterless constructor
+			final SensorData sensDataUnbaked = gson.fromJson(rawSensData, SensorData.class); // this will only call default parameterless constructor
 			return new SensorData(sensDataUnbaked.longitude, sensDataUnbaked.latitude, sensDataUnbaked.elevation, sensDataUnbaked.temperature, sensDataUnbaked.timestamp);
 		} catch (JsonSyntaxException e) { // we can have anything in kafka data
 			return null; 
@@ -88,7 +91,7 @@ public final class SensorData  implements Comparable<SensorData> {
 	
 	
 	/**
-	 * 
+	 * immutable object for identifyind sensors
 	 */
 	public static final class SensId  {
 		

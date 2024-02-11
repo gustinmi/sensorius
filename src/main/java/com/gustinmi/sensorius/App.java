@@ -25,13 +25,13 @@ public class App {
 		
 		return (args) -> {
 			
-			logger.info("Let's inspect the beans provided by Spring Boot:");
+			logger.info("Running app in console mode ");
 			
-			final String[] beanNames = ctx.getBeanDefinitionNames();
-			Arrays.sort(beanNames);
-			for (final String beanName : beanNames) {
-				System.out.println(beanName);
-			}
+//			final String[] beanNames = ctx.getBeanDefinitionNames();
+//			Arrays.sort(beanNames);
+//			for (final String beanName : beanNames) {
+//				System.out.println(beanName);
+//			}
 
 		};
 		

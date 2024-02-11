@@ -1,6 +1,6 @@
 package com.gustinmi.sensorius;
 
-import static com.gustinmi.sensorius.CompilationConstants.INFO_SENSOR_REGISTRY;
+import static com.gustinmi.sensorius.CompilationConstants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class SensorRegistry {
 	/** Add new sensor reading from kafka consumer
 	 * @param rawSensData
 	 */
-	public void addSensorReading(final String rawSensData) {
+	public void addSensorReading(final String rawSensData) { // TODO change method to return object, its elegant for testing
 		
 		logger.info("Considering sensor unchecked reading {}", rawSensData);
 		
@@ -53,9 +53,9 @@ public class SensorRegistry {
 			if (INFO_SENSOR_REGISTRY) logger.info("Sensor {} already present, adding reading", sensData.getId().toString());
 			
 			final SortedSet<SensorData> readingsData = sensors.get(sensData.getId());
-			readingsData.add(sensData);
+			readingsData.add(sensData); // will skip readings with same timestamp
 			
-			if (INFO_SENSOR_REGISTRY) logger.info("Sensor has {} readings", readingsData.size());
+			if (INFO_SENSOR_REGISTRY) logger.info("Sensor has total of {} readings", readingsData.size());
 			
 			// Check if we need to flush data
 			long currReadingTsMs = sensData.getTimestamp();
@@ -72,24 +72,15 @@ public class SensorRegistry {
 			}
 			readingsData.clear(); //TODO check threading 
 			
-			// iterate and remove duplicate readings
-			final List<SensorData> uniqList = new ArrayList<SensorData>(10); // start with max possible size
-			uniqList.add(copyOfDataset.first()); // always add first
-			
-			float lastTemperature = copyOfDataset.first().getTemperature(); // first element temp
-			for (int i = 1; i < uniqList.size(); i++) { // continue from second element
-				final SensorData candidate = uniqList.get(i);
-				if (INFO_SENSOR_REGISTRY) logger.info("Considering data for persistence: {}", candidate.toString());
-				if (candidate.getTemperature() == lastTemperature) continue;
-				else { // we have temperature change
-					if (INFO_SENSOR_REGISTRY) logger.info("Adding persistence candidate");
-					uniqList.add(candidate);
-					lastTemperature = candidate.getTemperature(); 
-				}
-			}
+			final List<SensorData> uniqList = extractUniqReadings(copyOfDataset);
 			
 			try {
-				TimeseriesDb.INSTANCE.flushToDb(uniqList);
+				final int numOfSaved = TimeseriesDb.INSTANCE.flushToDb(uniqList);
+				if (numOfSaved >= uniqList.size())
+					logger.warn("Not all items flushed to database. Diff is {}", uniqList.size() - numOfSaved);
+				if (INFO_SENSOR_REGISTRY) logger.info("Flushed {} items", numOfSaved);
+				
+				
 			} catch (RuntimeException e) {
 				logger.error("Exception while saving new readings into timeseries db: " + e.toString(), e);
 			} 
@@ -110,6 +101,36 @@ public class SensorRegistry {
 		
 	}
 	
+	public static List<SensorData> extractUniqReadings(final SortedSet<SensorData> copyOfDataset) {
+		Float lastTemperature = null;
+		final List<SensorData> uniqList = new ArrayList<SensorData>(10);
+		final Iterator<SensorData> iterator = copyOfDataset.iterator();
+        while (iterator.hasNext()) {
+        	
+        	final SensorData candidate = iterator.next();
+        	if (INFO_SENSOR_REGISTRY) logger.info("Considering data for persistence: {}", candidate.toString());
+        	
+        	if (lastTemperature == null) { // first element
+        		if (INFO_SENSOR_REGISTRY) logger.info("Adding first element");
+        		lastTemperature = candidate.getTemperature();
+        		uniqList.add(candidate);
+        		continue;
+        	}
+        	
+        	if (candidate.getTemperature() == lastTemperature) continue; // same reading
+        	else { // we have temperature change
+				if (INFO_SENSOR_REGISTRY) logger.info("Adding new persistence candidate");
+				uniqList.add(candidate);
+				lastTemperature = candidate.getTemperature();
+				continue;
+			}	
+        }
+        
+        return uniqList;
+	}
+	
+	
+	
 	public void clear() {
 		sensors.clear();
 	}
@@ -119,17 +140,17 @@ public class SensorRegistry {
 	}
 	
 	public List<SensorData> getOrderedDataForSensor(final SensId id) {
-		
-		final SortedSet<SensorData> sortedSet = sensors.get(id);
-		final List<SensorData> orderList = new ArrayList<SensorData>(sortedSet.size());
-		
-		for (final Iterator<SensorData> iterator = sortedSet.iterator(); iterator.hasNext();) {
-			final SensorData sensorData = iterator.next();
-			orderList.add(sensorData);
+		synchronized (sensors) {
+			final SortedSet<SensorData> sortedSet = sensors.get(id);
+			final List<SensorData> orderList = new ArrayList<SensorData>(sortedSet.size());
+			for (final Iterator<SensorData> iterator = sortedSet.iterator(); iterator.hasNext();) {
+				final SensorData sensorData = iterator.next();
+				orderList.add(sensorData);
+			}
+			return orderList;	
 		}
-		
-		return orderList;
 	}	
+	
 	
 
 }

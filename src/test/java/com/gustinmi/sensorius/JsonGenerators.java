@@ -1,12 +1,40 @@
 package com.gustinmi.sensorius;
 
 public class JsonGenerators {
+	
+	public static class SensorMockData {
 
-	public static String getSensorReading() {
-		return JsonGenerators.getSensorReading(0, 0, null);
+		private long timeMillis;
+		private int elevation;
+		private Float temperature;
+
+		public SensorMockData setTimeMillis(long timeMillis) {
+			this.timeMillis = timeMillis;
+			return this;
+		}
+		
+		public SensorMockData setElevation(int elevation) {
+			this.elevation = elevation;
+			return this;
+		}
+		
+		public SensorMockData setTemperature(Float temperature) {
+			this.temperature = temperature;
+			return this;
+		}
+
 	}
 
-	public static String getSensorReading(long timeMillis, int elevation, Float temperature) {
+	public static String getReading(SensorMockData d) {
+		return JsonGenerators.getReading(d.timeMillis, d.elevation, d.temperature);
+	}
+	
+
+	public static String getReading() {
+		return JsonGenerators.getReading(0, 0, null);
+	}
+
+	public static String getReading(long timeMillis, int elevation, Float temperature) {
 		final StringBuilder reading = new StringBuilder();
 		reading.append("{");
 		reading.append("\"longitude\": \"46°04'53.6\\\"N\"");

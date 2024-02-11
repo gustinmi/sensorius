@@ -1,5 +1,7 @@
 package com.gustinmi.sensorius;
 
+import static com.gustinmi.sensorius.CompilationConstants.*;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,20 +16,22 @@ public class TimeseriesDb {
 		
 	private TimeseriesDb() { }
 	
-	
 	/**
 	 * We are retrieving copy a list so iterating is not a issue if data changes
 	 * Data was also filtered before so we save what we get
 	 * Ordering is actually not important as long as we have creation date as a index in database 
 	 * @param dataList
+	 * @return 
 	 */
-	public void flushToDb(final List<SensorData> dataList) {
-
+	public int flushToDb(final List<SensorData> dataList) {
+		int numOfSaved = 0;
+		logger.info("Trying to saving to timeseries {} number of items", dataList.size());
 		for (final Iterator<SensorData> iterator = dataList.iterator(); iterator.hasNext();) {
-			final SensorData sensorData2 = iterator.next();
-			logger.info("Saving to timeseries {}", sensorData2.toString());
+			final SensorData sd = iterator.next();
+			if (INFO_TIMESERIES) logger.info("Saving timeserie {}", sd.toString());
+			numOfSaved++;
 		}
-		
+		return numOfSaved;
 	}
 	
 }
