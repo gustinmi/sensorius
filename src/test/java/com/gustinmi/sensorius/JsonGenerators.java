@@ -28,7 +28,6 @@ public class JsonGenerators {
 	public static String getReading(SensorMockData d) {
 		return JsonGenerators.getReading(d.timeMillis, d.elevation, d.temperature);
 	}
-	
 
 	public static String getReading() {
 		return JsonGenerators.getReading(0, 0, null);

@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class SensorDataTests {
 	
-	public static final Logger logger = LoggerFactory.getLogger(App.class);
+	public static final Logger logger = LoggerFactory.getLogger(SensorDataTests.class);
 
 	@Test
 	void createSensorData() {

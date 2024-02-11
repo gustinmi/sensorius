@@ -8,6 +8,9 @@
 [Stress testing](https://www.blazemeter.com/blog/kafka-testing)
 [SpringBoot Docker](https://medium.com/@bubu.tripathy/dockerizing-your-spring-boot-application-75bf2c6568d0)
 [Kafka Docs](https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#assign(java.util.Collection))
+[SpringBoot logging](https://www.baeldung.com/spring-boot-logging)
+[SpringBoot Start project - actuator](https://spring.io/guides/gs/spring-boot)
+
 
 ## Installing kafka
 
@@ -43,6 +46,11 @@ bin/kafka-server-start.sh config/kraft/server.properties
 
 # create topic
 bin/kafka-topics.sh --create --topic demo-messages --bootstrap-server localhost:9092
+
+# create topic with partitions
+bin/kafka-topics.sh --create \
+  --replication-factor 1 --partitions 1 \
+  --topic mytopic
 
 # produce some messages
 bin/kafka-console-producer.sh --topic demo-messages --bootstrap-server localhost:9092
