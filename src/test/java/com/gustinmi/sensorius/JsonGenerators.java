@@ -71,4 +71,39 @@ public class JsonGenerators {
 		return reading.toString();
 	}
 
+	
+	public static String getSensorOne(long timeMillis, Float temperature) {
+		final StringBuilder reading = new StringBuilder();
+		reading.append("{");
+		
+		// ID 
+		reading.append("\"longitude\": \"46°04'53.6\\\"N\"");
+		reading.append(",\"latitude\": \"14°29'43.5\\\"E\"");
+		reading.append(",\"elevation\": " + String.format("%s", 200));
+		
+		// DATA
+		reading.append(",\"timestamp\": " + String.format("%s", timeMillis));
+		reading.append(",\"temperature\": " + temperature.toString());
+		
+		reading.append("}");
+		return reading.toString();
+	}
+
+	public static String getSensorTwo(long timeMillis, Float temperature) {
+		final StringBuilder reading = new StringBuilder();
+		reading.append("{");
+		
+		// ID 
+		reading.append("\"longitude\": \"46°04'53.6\\\"N\"");
+		reading.append(",\"latitude\": \"14°29'43.5\\\"E\"");
+		reading.append(",\"elevation\": " + String.format("%s", 300));
+		
+		// DATA
+		reading.append(",\"timestamp\": " + String.format("%s", timeMillis));
+		reading.append(",\"temperature\": " + temperature.toString());
+		
+		reading.append("}");
+		return reading.toString();
+	}
+
 }

@@ -40,40 +40,6 @@ public class SensorRegistryLoadTest {
 		SensorRegistry.INSTANCE.clear();	
 	}
 	
-	public static String getSensorOne(long timeMillis, Float temperature) {
-		final StringBuilder reading = new StringBuilder();
-		reading.append("{");
-		
-		// ID 
-		reading.append("\"longitude\": \"46°04'53.6\\\"N\"");
-		reading.append(",\"latitude\": \"14°29'43.5\\\"E\"");
-		reading.append(",\"elevation\": " + String.format("%s", 200));
-		
-		// DATA
-		reading.append(",\"timestamp\": " + String.format("%s", timeMillis));
-		reading.append(",\"temperature\": " + temperature.toString());
-		
-		reading.append("}");
-		return reading.toString();
-	}
-	
-	public static String getSensorTwo(long timeMillis, Float temperature) {
-		final StringBuilder reading = new StringBuilder();
-		reading.append("{");
-		
-		// ID 
-		reading.append("\"longitude\": \"46°04'53.6\\\"N\"");
-		reading.append(",\"latitude\": \"14°29'43.5\\\"E\"");
-		reading.append(",\"elevation\": " + String.format("%s", 300));
-		
-		// DATA
-		reading.append(",\"timestamp\": " + String.format("%s", timeMillis));
-		reading.append(",\"temperature\": " + temperature.toString());
-		
-		reading.append("}");
-		return reading.toString();
-	}
-	
 	//@Disabled
 	@Test
 	@SuppressWarnings("unchecked")
@@ -86,7 +52,7 @@ public class SensorRegistryLoadTest {
             completableFutures[idx] = CompletableFuture.supplyAsync(() -> {
             	for (int i = 0; i < SENS1_SAMPLE_NUM; i++) {
             		logger.info("Simulating SENSOR1 reading");
-	        		final String json = getSensorOne(currentTimeMillis(), Randomizer.generateRandomFloat());
+	        		final String json = JsonGenerators.getSensorOne(currentTimeMillis(), Randomizer.generateRandomFloat());
 	        		SensorRegistry.INSTANCE.addSensorReading(json);
 	        		try {
 						Thread.sleep(Randomizer.getRandomNumber(SENS1_MIN_DELAY, SENS1_MAX_DELAY));
@@ -103,7 +69,7 @@ public class SensorRegistryLoadTest {
             completableFutures1[idx] = CompletableFuture.supplyAsync(() -> {
             	for (int i = 0; i < SENS2_SAMPLE_NUM; i++) {
             		logger.info("Simulating SENSOR2 reading");
-	        		final String json = getSensorTwo(currentTimeMillis(), Randomizer.generateRandomFloat());
+	        		final String json = JsonGenerators.getSensorTwo(currentTimeMillis(), Randomizer.generateRandomFloat());
 	        		SensorRegistry.INSTANCE.addSensorReading(json);
 	        		try {
 						Thread.sleep(Randomizer.getRandomNumber(SENS2_MIN_DELAY, SENS2_MAX_DELAY));
@@ -116,6 +82,7 @@ public class SensorRegistryLoadTest {
         // Join both arrays
         final CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutures)
         		.thenCombine(CompletableFuture.allOf(completableFutures1), (result1, result2) -> null);
+        
         allOf.join(); // Join to block the current thread until all tasks are completed
 		
 	}

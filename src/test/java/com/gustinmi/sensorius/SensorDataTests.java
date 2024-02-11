@@ -37,8 +37,6 @@ class SensorDataTests {
 		assertTrue(!fromRaw.equals(fromRawAnother));
 	}
 
-	
-
 	@Test
 	void testSensorCompareTimestamp() {
 		
@@ -63,16 +61,12 @@ class SensorDataTests {
 		
 	}
 
-	
-	
-
 	@Test
 	void createSensorDataInvalidJson() {
 		final String malformedRaw = getSensorReadingMalformed();
 		final SensorData malformed = SensorData.fromRaw(malformedRaw);
 		assertTrue(malformed == null);
 	}
-	
 	
 	public static long currentTimeMillis() {
 		return System.currentTimeMillis();
