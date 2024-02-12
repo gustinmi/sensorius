@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.3">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -26,30 +26,52 @@
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
-        <com.di.jmeter.kafka.config.KafkaConsumerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaConsumerConfig" testname="Kafka Consumer Config" enabled="false">
-          <boolProp name="autoCommit">false</boolProp>
-          <stringProp name="deSerializerKey">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
-          <stringProp name="deSerializerValue">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
+        <com.di.jmeter.kafka.config.KafkaProducerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaProducerConfig" testname="Kafka Producer Config" enabled="true">
+          <stringProp name="batchSize">16384</stringProp>
+          <stringProp name="clientId">JMeter-Producer-1</stringProp>
           <collectionProp name="extraConfigs"/>
-          <stringProp name="groupId">consumer-group-1</stringProp>
           <stringProp name="kafkaBrokers">localhost:9092</stringProp>
-          <stringProp name="kafkaConsumerClientVariableName">KafkaConsumerClient</stringProp>
+          <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
           <stringProp name="kafkaSslKeystore"></stringProp>
-          <stringProp name="kafkaSslKeystorePassword"></stringProp>
-          <stringProp name="kafkaSslPrivateKeyPass"></stringProp>
+          <stringProp name="kafkaSslKeystorePassword">Chang3M3</stringProp>
+          <stringProp name="kafkaSslPrivateKeyPass">Chang3M3</stringProp>
           <stringProp name="kafkaSslTruststore"></stringProp>
-          <stringProp name="kafkaSslTruststorePassword"></stringProp>
-          <stringProp name="numberOfMsgToPoll">1</stringProp>
+          <stringProp name="kafkaSslTruststorePassword">Chang3M3</stringProp>
           <stringProp name="securityType">securityType.plaintext</stringProp>
-          <stringProp name="topic">demo-messages</stringProp>
-        </com.di.jmeter.kafka.config.KafkaConsumerConfig>
+          <stringProp name="serializerKey">org.apache.kafka.common.serialization.VoidSerializer</stringProp>
+          <stringProp name="serializerValue">org.apache.kafka.common.serialization.StringSerializer</stringProp>
+        </com.di.jmeter.kafka.config.KafkaProducerConfig>
         <hashTree/>
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler" enabled="true">
+          <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1707765126101,&quot;temperature&quot;: 0.14}</stringProp>
+          <stringProp name="kafkaMessageKey"></stringProp>
+          <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
+          <stringProp name="kafkaTopic">sensor-data</stringProp>
+          <collectionProp name="messageHeaders"/>
+          <stringProp name="partitionString"></stringProp>
+        </com.di.jmeter.kafka.sampler.KafkaProducerSampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="false">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
         <com.di.jmeter.kafka.config.KafkaConsumerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaConsumerConfig" testname="Kafka Consumer Config" enabled="true">
           <stringProp name="kafkaConsumerClientVariableName">KafkaConsumerClient</stringProp>
           <stringProp name="kafkaBrokers">localhost:9092</stringProp>
-          <stringProp name="groupId">consumer-group-1</stringProp>
-          <stringProp name="topic">demo-messages</stringProp>
-          <stringProp name="deSerializerKey">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
+          <stringProp name="groupId">tGroup1</stringProp>
+          <stringProp name="topic">sensor-data</stringProp>
+          <stringProp name="deSerializerKey">org.apache.kafka.common.serialization.VoidDeserializer</stringProp>
           <stringProp name="deSerializerValue">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
           <stringProp name="numberOfMsgToPoll">1</stringProp>
           <boolProp name="autoCommit">true</boolProp>

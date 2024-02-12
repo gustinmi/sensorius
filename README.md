@@ -23,6 +23,9 @@
 	- currently locking in interceptor is for whole sensors at once. Perhaps locking strategy should be per sensor level only
 	- currently processing of messages and saving to timeseries db is done on same thread (although in thread save manner). Perhaps there should be per sensor backgroud flush detection
 	- perhaps timeseries db would have its own background thread to process buffer of persistence candidates
+- Add spring metrics plugin (actuator) for beter integration into kubernetes (healtcheck, probe and so on ...)
+
+
 
 ## Code quality tools
 

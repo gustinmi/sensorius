@@ -1,4 +1,6 @@
-package com.gustinmi.sensorius;
+package com.gustinmi.sensorius.utils;
+
+import static  com.gustinmi.sensorius.SensorDataTests.*;
 
 public class JsonGenerators {
 	
@@ -45,7 +47,7 @@ public class JsonGenerators {
 			reading.append(",\"elevation\": " + String.format("%s", elevation));
 		
 		if (timeMillis == 0)
-			reading.append(",\"timestamp\": " + String.format("%s", SensorDataTests.currentTimeMillis()));
+			reading.append(",\"timestamp\": " + String.format("%s", currentTimeMillis()));
 		else
 			reading.append(",\"timestamp\": " + String.format("%s", timeMillis));
 		
@@ -65,7 +67,7 @@ public class JsonGenerators {
 		reading.append("\"longitude\": \"46°04'53.6\\\"N\"");
 		reading.append("itude\": \"14°29'43.5\\\"E\"");
 		reading.append(",\"elevation\": " + String.format("%s", Randomizer.getRandomNumber(290, 293)) );
-		reading.append("\"timestamp\": " + String.format("%s", SensorDataTests.currentTimeMillis()));
+		reading.append("\"timestamp\": " + String.format("%s", currentTimeMillis()));
 		reading.append(",\"temperature\": 2.22");
 		reading.append("");
 		return reading.toString();

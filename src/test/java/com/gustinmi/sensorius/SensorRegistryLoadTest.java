@@ -10,12 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.gustinmi.sensorius.utils.JsonGenerators;
+import com.gustinmi.sensorius.utils.LoggingFactory;
+import com.gustinmi.sensorius.utils.Randomizer;
+
 /**
  * With this class we are generating load on sensor registry
  * We kind of abuse unitest for simulation
  */
 @SpringBootTest
 public class SensorRegistryLoadTest {
+	
+	public static final Logger logger = LoggingFactory.loggerForThisClass();
 	
 	/* SENSOR1 load settings */
 	public static final int SENS1_MIN_DELAY = 5_00; // lower means faster
@@ -28,8 +34,6 @@ public class SensorRegistryLoadTest {
 	public static final int SENS2_SAMPLE_NUM = 20;
 	
 	private static final boolean FLUSH_ON = true;
-	
-	public static final Logger logger = LoggerFactory.getLogger(App.class);
 	
 	static {
 		SensorRegistry.INSTANCE.initialize(FLUSH_ON);

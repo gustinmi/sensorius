@@ -1,19 +1,21 @@
 package com.gustinmi.sensorius;
 
+import static com.gustinmi.sensorius.utils.JsonGenerators.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import static com.gustinmi.sensorius.JsonGenerators.*;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.gustinmi.sensorius.utils.JsonGenerators;
+import com.gustinmi.sensorius.utils.LoggingFactory;
+
 @SpringBootTest
-class SensorDataTests {
+public class SensorDataTests {
 	
-	public static final Logger logger = LoggerFactory.getLogger(SensorDataTests.class);
+	public static final Logger logger = LoggingFactory.loggerForThisClass();
 
 	@Test
 	void createSensorData() {

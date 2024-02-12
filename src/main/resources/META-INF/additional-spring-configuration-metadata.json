@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "com.naka.app.SPRING_KAFKA_BROKERS",
-  "type": "java.lang.String",
-  "description": "A description for 'com.naka.app.SPRING_KAFKA_BROKERS'"
-}]}
+{"properties": [
+  {
+    "name": "com.gustinmi.sensorius.topic-name",
+    "type": "java.lang.String",
+    "description": "A description for 'com.gustinmi.sensorius.topic-name'"
+  },
+  {
+    "name": "com.gustinmi.sensorius.group-name",
+    "type": "java.lang.String",
+    "description": "A description for 'com.gustinmi.sensorius.group-name'"
+  }
+]}

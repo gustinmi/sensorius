@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +17,12 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import com.gustinmi.sensorius.utils.LoggingFactory;
 
 //@SpringBootTest
 public class SpringKafkaTests {
 	
-	
+	public static final Logger logger = LoggingFactory.loggerForThisClass();
 	
 	//@Test
 	public void testProducer(EmbeddedKafkaBroker embeddedKafka) throws Exception {

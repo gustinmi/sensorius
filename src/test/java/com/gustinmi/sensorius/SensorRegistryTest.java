@@ -12,13 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.gustinmi.sensorius.JsonGenerators.SensorMockData;
 import com.gustinmi.sensorius.SensorData.SensId;
+import com.gustinmi.sensorius.utils.JsonGenerators;
+import com.gustinmi.sensorius.utils.LoggingFactory;
+import com.gustinmi.sensorius.utils.JsonGenerators.SensorMockData;
 
 @SpringBootTest
 public class SensorRegistryTest {
 
-	public static final Logger logger = LoggerFactory.getLogger(SensorRegistryTest.class);
+	public static final Logger logger = LoggingFactory.loggerForThisClass();
 	
 	@BeforeEach 
 	public void setupTest() {

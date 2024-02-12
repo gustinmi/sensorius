@@ -14,10 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gustinmi.sensorius.SensorData.SensId;
+import com.gustinmi.sensorius.utils.LoggingFactory;
 
 public class SensorRegistry {
 	
-	public static final Logger logger = LoggerFactory.getLogger(SensorRegistry.class);
+	public static final Logger logger = LoggingFactory.loggerForThisClass();
 	
     public static final SensorRegistry INSTANCE = new SensorRegistry();
     

@@ -13,9 +13,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -31,13 +34,14 @@ import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.ContainerTestUtils;
 
-import com.gustinmi.sensorius.kafka.SensorConsumer;
+import com.gustinmi.sensorius.utils.JsonGenerators;
+import com.gustinmi.sensorius.utils.LoggingFactory;
 
 //@EmbeddedKafka(partitions = 1, topics = {"sens_data"})
 @EmbeddedKafka(ports = {1234})
 public class EmbeddedKafkaTests {
 	
-	public static final Logger logger = LoggerFactory.getLogger(EmbeddedKafkaTests.class);
+	public static final Logger logger = LoggingFactory.loggerForThisClass();
 	
 	public static final int PARTITION_NUMBER = 1;
 	
@@ -50,6 +54,22 @@ public class EmbeddedKafkaTests {
 	
 	//TODO error handling CommonErrorHandler commonErrorHandler = msgListenerContainer.getCommonErrorHandler();
 	
+	
+	public static Map<String, Object> getConsumerProps(String brokers, String group, String autoCommit) {
+		Map<String, Object> props = new HashMap<>();
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, group);
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, autoCommit);
+		props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10");
+		props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, VoidDeserializer.class);
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		return props;
+	}
+	
+	
+	
 	@Test
 	public void testProducer(EmbeddedKafkaBroker embeddedKafka) throws Exception {
 		
@@ -58,7 +78,7 @@ public class EmbeddedKafkaTests {
 		final String brokerList = embeddedKafka.getBrokersAsString();
 		logger.info("Worker list: \n" + brokerList);
   
-		Map<String, Object> consumerProps =  SensorConsumer.getConsumerProps(brokerList, GROUP_ID, "false"); // brokers, groupid, autocommit
+		Map<String, Object> consumerProps =  getConsumerProps(brokerList, GROUP_ID, "false"); // brokers, groupid, autocommit
 		DefaultKafkaConsumerFactory<Void, String> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
 		ContainerProperties containerProperties = new ContainerProperties(TEMPLATE_TOPIC_NAME);
 		KafkaMessageListenerContainer<Void, String> msgListenerContainer = new KafkaMessageListenerContainer<>(cf, containerProperties);
