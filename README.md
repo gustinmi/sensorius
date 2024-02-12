@@ -11,9 +11,11 @@
 
 ## Implementation decisions based on input document
 
+- due to high partition count we'll use cocnurrent listeners
 - core engine was detached from Kafka in order for us to be able to use simulation engines in tests
 - there was no time to benchmark Spring CDI container, so core functionality is more or less written in POJOs. It should be faster.
 - since performance is most important, i decided to go with console profile (no embedded webserver). This will of course mean some of the spring monitoring functionalities will not be available
+- incremental testing (no kafka, embedded kafka, real kafka); all important components can be tested in standalone
 
 ## Code quality tools
 
@@ -24,7 +26,6 @@
 
 I prepared simple load simulation inside unit tests. We can adjust frequency of simulation. Another way of testing is via JMeter producer or scripts.
 
-
 ## Code instrumentation
 
 - all important parts of code are configurable
@@ -32,8 +33,12 @@ I prepared simple load simulation inside unit tests. We can adjust frequency of 
 - conditional compilations is used for logging. Usually on high loads, we do not verbose or info log.
 - there is possibility to use debugging an all pieces of application
 
+## Tools used
 
-## References
+- eclipse with STS tools v4
+- JMeter
+- Docker
+- Kafka 
 
 ### Testing
 
