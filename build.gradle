@@ -11,6 +11,12 @@ java {
 	sourceCompatibility = '21'
 }
 
+bootJar {
+    manifest {
+    	attributes 'Start-Class': 'com.naka.app.CryptoTransactionsApplication'
+    }
+}
+
 repositories {
 	mavenCentral()
 }
