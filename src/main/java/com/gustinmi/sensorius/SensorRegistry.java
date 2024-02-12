@@ -1,6 +1,6 @@
 package com.gustinmi.sensorius;
 
-import static com.gustinmi.sensorius.CompilationConstants.*;
+import static com.gustinmi.sensorius.utils.CompilationConstants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

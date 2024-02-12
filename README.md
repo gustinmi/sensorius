@@ -2,20 +2,20 @@
 
 ## Facts from requirements
 
-- system is real-time
-- producers specify no key so hence there is round robin to partitions
-- we want to prevent saving of same data reading as much as possible
-- changing anything on Kafka is out of scope. We have no access to topic configuration, message format, etc
-- application is real-time so we save and keep data in best effort manner. We discard old stale data (because some sensor was offline for considerable amount of time or had latency problems)
-- since we are only interested in change in temperature, we avoid save same readings (in respect to given time frame)
+- Application is real-time so we save and keep data in best effort manner. We discard old stale data (because some sensor was offline for considerable amount of time or had latency problems)
+- Producers specify no key so hence there is round robin producing to partitions (as per spec)
+- Changing anything on Kafka configuration and producer side is out of scope (topic configuration, message format, keys, headers)
+- Since we are only interested in change in temperature, we avoid save same readings 
 
 ## Implementation decisions based on input document
 
-- due to high partition count we'll use cocnurrent listeners
-- core engine was detached from Kafka in order for us to be able to use simulation engines in tests
-- there was no time to benchmark Spring CDI container, so core functionality is more or less written in POJOs. It should be faster.
-- since performance is most important, i decided to go with console profile (no embedded webserver). This will of course mean some of the spring monitoring functionalities will not be available
-- incremental testing (no kafka, embedded kafka, real kafka); all important components can be tested in standalone
+- Realtime data is processed in time-based frames (if same reading is repeated in whole time frame, only 1 reading is actually saved)
+- If however sensors readings is increased (bigger resolution), we save when reading count reaches treshold
+- Due to high partition count we'll use concurrent listeners.
+- Core engine was detached from Kafka in order for us to be able to use simulation engines in junit tests.
+- There was no time to benchmark Spring CDI container, so core functionality is more or less written in POJOs. It should be faster.
+- Since performance is most important, i decided to go with console profile (no embedded webserver). This will of course mean some of the spring monitoring functionalities will not be available.
+- Incremental testing (no Kafka, embedded Kafka broker, real Kafka broker); all important components can be tested in standalone mode.
 
 ###  Points for improvements 
 
@@ -24,7 +24,6 @@
 	- currently processing of messages and saving to timeseries db is done on same thread (although in thread save manner). Perhaps there should be per sensor backgroud flush detection
 	- perhaps timeseries db would have its own background thread to process buffer of persistence candidates
 - Add spring metrics plugin (actuator) for beter integration into kubernetes (healtcheck, probe and so on ...)
-
 
 
 ## Code quality tools
@@ -41,11 +40,11 @@ I prepared simple load simulation inside unit tests. We can adjust frequency of 
 - all important parts of code are configurable
 - final keyword is used where ever possible to minimise logical errors, reassignments, etc.
 - conditional compilations is used for logging. Usually on high loads, we do not verbose or info log.
-- there is possibility to use debugging an all pieces of application
+- there is possibility to use debugging in all classes comprising application (without external dependency)
 
 ## Tools used
 
-- eclipse with STS tools v4
+- Eclipse with STS Spring Tools v4
 - JMeter
 - Docker
 - Kafka 

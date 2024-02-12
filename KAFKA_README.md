@@ -1,21 +1,25 @@
 # SENSORIUS
 
--[Boot](https://spring.io/guides/gs/spring-boot)
--[Testing](https://docs.spring.io/spring-kafka/reference/testing.html)
--[Embedded kafka](https://docs.spring.io/spring-kafka/reference/testing.html#embedded-kafka-annotation)
--[Influx](https://medium.berkayozcan.com/connecting-an-influxdb-database-to-a-spring-boot-application-81f53ead3c7)
--[Influx sample](https://medium.com/trabe/monitoring-humidity-and-temperature-with-grafana-influxdb-and-orange-pi-9680046c70c)
--[Stress testing](https://www.blazemeter.com/blog/kafka-testing)
--[SpringBoot Docker](https://medium.com/@bubu.tripathy/dockerizing-your-spring-boot-application-75bf2c6568d0)
--[Kafka Docs](https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#assign(java.util.Collection))
--[SpringBoot logging](https://www.baeldung.com/spring-boot-logging)
--[SpringBoot Start project - actuator](https://spring.io/guides/gs/spring-boot)
+## Reference 
+
+- [Boot](https://spring.io/guides/gs/spring-boot)
+- [Testing](https://docs.spring.io/spring-kafka/reference/testing.html)
+- [Embedded kafka](https://docs.spring.io/spring-kafka/reference/testing.html#embedded-kafka-annotation)
+- [Influx](https://medium.berkayozcan.com/connecting-an-influxdb-database-to-a-spring-boot-application-81f53ead3c7)
+- [Influx sample](https://medium.com/trabe/monitoring-humidity-and-temperature-with-grafana-influxdb-and-orange-pi-9680046c70c)
+- [Stress testing](https://www.blazemeter.com/blog/kafka-testing)
+- [SpringBoot Docker](https://medium.com/@bubu.tripathy/dockerizing-your-spring-boot-application-75bf2c6568d0)
+- [Kafka Docs](https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#assign(java.util.Collection))
+
+- [SpringBoot logging](https://www.baeldung.com/spring-boot-logging)
+- [SpringBoot Start project - actuator](https://spring.io/guides/gs/spring-boot)
+- [Spring application.properties](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)
+
 
 ## Installing kafka
 
-** NOTE - running kafka docker has proven difficult in Windows WSL2 environment due to networking, thats why we're running here bare metal version**
-
-[From](https://www.confluent.io/blog/set-up-and-run-kafka-on-windows-linux-wsl-2/#start-kafka-cluster)
+** NOTE - running kafka docker has proven difficult in Windows WSL2 environment due to networking, thats why we're running here bare metal version from jar**
+See [From](https://www.confluent.io/blog/set-up-and-run-kafka-on-windows-linux-wsl-2/#start-kafka-cluster)
 
 ```
 # upgrade packages
@@ -56,21 +60,20 @@ bin/kafka-topics.sh --create \
 bin/kafka-console-producer.sh --topic demo-messages --bootstrap-server localhost:9092
 
 # consume events
-bin/kafka-console-consumer.sh --topic demo-messages --from-beginning --bootstrap-server localhost:9092
+bin/kafka-console-consumer.sh --topic demo-messages --from-beginning --bootstrap-server localhost:9092 --consumer-property group.id=tGroup1
 
 # stop testing
-
-# 1. Stop the consumer and producer clients with Ctrl+C
-# 2. Stop the Kafka Server with Ctrl+C
-
-rm -rf /tmp/kafka-logs /tmp/zookeeper /tmp/kraft-combined-logs
+1. Stop the consumer and producer clients with Ctrl+C
+2. Stop the Kafka Server with Ctrl+C
+3. rm -rf /tmp/kafka-logs /tmp/zookeeper /tmp/kraft-combined-logs
 
 ```
 
+### Troubleshooting kafka conectivity
 
-## Troubleshoot
+#### Broker not reachable from java process
 
-### Broker not acessible
+Check binded port of kafka
 
 ```
 netstat -na | grep 9092

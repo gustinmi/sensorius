@@ -31,7 +31,7 @@ public class App {
 		
 		return (args) -> {
 
-			logger.info("Running app in console mode ");
+			logger.info("Running app in console mode ...");
 
 		};
 		
