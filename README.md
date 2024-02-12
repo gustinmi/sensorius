@@ -17,6 +17,13 @@
 - since performance is most important, i decided to go with console profile (no embedded webserver). This will of course mean some of the spring monitoring functionalities will not be available
 - incremental testing (no kafka, embedded kafka, real kafka); all important components can be tested in standalone
 
+###  Points for improvements 
+
+- More concurrency
+	- currently locking in interceptor is for whole sensors at once. Perhaps locking strategy should be per sensor level only
+	- currently processing of messages and saving to timeseries db is done on same thread (although in thread save manner). Perhaps there should be per sensor backgroud flush detection
+	- perhaps timeseries db would have its own background thread to process buffer of persistence candidates
+
 ## Code quality tools
 
 - TDD from beginning
