@@ -18,7 +18,7 @@ import com.gustinmi.sensorius.SensorData.SensId;
 @SpringBootTest
 public class SensorRegistryTest {
 
-	public static final Logger logger = LoggerFactory.getLogger(App.class);
+	public static final Logger logger = LoggerFactory.getLogger(SensorRegistryTest.class);
 	
 	@BeforeEach 
 	public void setupTest() {
@@ -118,7 +118,6 @@ public class SensorRegistryTest {
 		assertTrue(sensorData3.equals(fromRawFirst));
 		
 	}
-	
 	
 
 	@Test

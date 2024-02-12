@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class SensorDataTests {
 	
-	public static final Logger logger = LoggerFactory.getLogger(App.class);
+	public static final Logger logger = LoggerFactory.getLogger(SensorDataTests.class);
 
 	@Test
 	void createSensorData() {
@@ -36,8 +36,6 @@ class SensorDataTests {
 		final SensorData fromRawAnother = SensorData.fromRaw(rawAnother);
 		assertTrue(!fromRaw.equals(fromRawAnother));
 	}
-
-	
 
 	@Test
 	void testSensorCompareTimestamp() {
@@ -63,16 +61,12 @@ class SensorDataTests {
 		
 	}
 
-	
-	
-
 	@Test
 	void createSensorDataInvalidJson() {
 		final String malformedRaw = getSensorReadingMalformed();
 		final SensorData malformed = SensorData.fromRaw(malformedRaw);
 		assertTrue(malformed == null);
 	}
-	
 	
 	public static long currentTimeMillis() {
 		return System.currentTimeMillis();

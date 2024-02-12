@@ -17,7 +17,7 @@ import com.gustinmi.sensorius.SensorData.SensId;
 
 public class SensorRegistry {
 	
-	public static final Logger logger = LoggerFactory.getLogger(App.class);
+	public static final Logger logger = LoggerFactory.getLogger(SensorRegistry.class);
 	
     public static final SensorRegistry INSTANCE = new SensorRegistry();
     
@@ -76,7 +76,7 @@ public class SensorRegistry {
 			
 			try {
 				final int numOfSaved = TimeseriesDb.INSTANCE.flushToDb(uniqList);
-				if (numOfSaved >= uniqList.size())
+				if (numOfSaved != uniqList.size())
 					logger.warn("Not all items flushed to database. Diff is {}", uniqList.size() - numOfSaved);
 				if (INFO_SENSOR_REGISTRY) logger.info("Flushed {} items", numOfSaved);
 				
