@@ -12,7 +12,8 @@
 ## Implementation decisions based on input document
 
 - core engine was detached from Kafka in order for us to be able to use simulation engines in tests
-- there was no time to benchmark Spring CDI container, so core functionality is more or less written in POJOs. It should be faster. 
+- there was no time to benchmark Spring CDI container, so core functionality is more or less written in POJOs. It should be faster.
+- since performance is most important, i decided to go with console profile (no embedded webserver). This will of course mean some of the spring monitoring functionalities will not be available
 
 ## Code quality tools
 
