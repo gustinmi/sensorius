@@ -3,7 +3,6 @@ package com.gustinmi.sensorius;
 import static com.gustinmi.sensorius.utils.CompilationConstants.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,8 +13,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.gustinmi.sensorius.SensorData.SensId;
 import com.gustinmi.sensorius.utils.LoggingFactory;
 
@@ -39,7 +36,7 @@ public class SensorRegistry {
 	public void initialize(boolean shouldFlush)	{
 
  		if (initialized.getAndSet(true)) {
-            log.severe("Already initialized");
+ 			logger.error("Already initialized");
             return;
         }
 
@@ -60,14 +57,18 @@ public class SensorRegistry {
 		final SensorData sensData = SensorData.fromRaw(rawSensData);
 		if (sensData == null) return; // nothing we can do about json syntax errors, drop it as soon as you can
 
+		long tsStart = RealtimeRetriever.currentTimeMillis();
+		
 		// handle adding of sensors	
 		if (sensors.containsKey(sensData.getId())) { // existing sensor
 			
 			if (INFO_SENSOR_REGISTRY) logger.info("Sensor {} already present, adding reading", sensData.getId().toString());
 			
+			final int readingSize;
 			final SortedSet<SensorData> readingsData = sensors.get(sensData.getId());
 			synchronized (readingsData) { 
 				readingsData.add(sensData); // will skip readings with same timestamp
+				readingSize = readingsData.size();
 			}
 			
 			if (INFO_SENSOR_REGISTRY) logger.info("Sensor has total of {} readings", readingsData.size());
@@ -76,22 +77,16 @@ public class SensorRegistry {
 			long currReadingTsMs = sensData.getTimestamp();
 			long firstReadingTsMs = readingsData.first().getTimestamp();
 			final boolean shouldFlush = flushCondition.shouldFlush(readingsData.size(), firstReadingTsMs, currReadingTsMs);
-			if (!shouldFlush){
-				logger.info("Throwing away sensor data because flushing is OFF");				
-				synchronized (readingsData) { 
-					readingsData.clear(); 
-				}
-				return;
-			}
-
+			if (!shouldFlush) return;
+			
 			logger.info("Flushing sensor data for {}", sensData.getId().toString());
 			
 			// we are going to empty buffer for sensor	
 			final SortedSet<SensorData> copyOfDataset; // work with a copy of the list, so we don't deadlock
 			synchronized (readingsData) { //TODO check threading
 				copyOfDataset = new TreeSet<SensorData>(readingsData);
+				readingsData.clear();
 			}
-			readingsData.clear(); //TODO check threading 
 			
 			// NO NEED TO LOCK, we are working with copy of data
 			final List<SensorData> uniqList = extractUniqReadings(copyOfDataset);
@@ -116,7 +111,9 @@ public class SensorRegistry {
 			
 			// IMPORTANT:  since this is fresh data, there is no need to save to database anythings
 		}
-				
+		
+		if (INFO_SENSOR_REGISTRY) logger.info("Total time processing {} ms", RealtimeRetriever.currentTimeMillis() - tsStart);
+		
 		return;
 		
 	}

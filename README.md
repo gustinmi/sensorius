@@ -13,15 +13,14 @@
 - If however sensors readings is increased (bigger resolution), we save when reading count reaches treshold
 - Due to high partition count we'll use concurrent listeners.
 - Core engine was detached from Kafka in order for us to be able to use simulation engines in junit tests.
-- There was no time to benchmark Spring CDI container, so core functionality is more or less written in POJOs. It should be faster.
-	- for similar reasons, no spring framework libraries were used (like quartz for cronjob like tasks)
+- There was no time to benchmark Spring, so core functionality is more or less written in POJOs. It should be faster.
+  for similar reasons, no spring framework libraries were used (like quartz for cronjob like tasks)
 - Since performance is most important, i decided to go with console profile (no embedded webserver). This will of course mean some of the spring monitoring functionalities will not be available.
 - Incremental testing (no Kafka, embedded Kafka broker, real Kafka broker); all important components can be tested in standalone mode.
 
 ###  Points for improvements 
 
 - More concurrency
-	- currently locking in interceptor is for whole sensors at once. Perhaps locking strategy should be per sensor level only
 	- currently processing of messages and saving to timeseries db is done on same thread (although in thread save manner). Perhaps there should be per sensor backgroud flush detection
 	- perhaps timeseries db would have its own background thread to process buffer of persistence candidates
 - Add spring metrics plugin (actuator) for beter integration into kubernetes (healtcheck, probe and so on ...)
@@ -42,6 +41,8 @@ I prepared simple load simulation inside unit tests. We can adjust frequency of 
 - final keyword is used where ever possible to trade logical errors for syntax errors  (reassignments, missing branch statements)
 - conditional compilations is used for logging. Usually on high loads, we do not verbose or info log.
 - there is possibility to use debugging in all classes comprising application (without external dependency)
+- simple http interface was added for health check probe
+- simple time measurements were added on data insert for beter tracking. If used in conjuction with grafana or splunk, we could have error alerting if processing time rises
 
 ## Tools used
 

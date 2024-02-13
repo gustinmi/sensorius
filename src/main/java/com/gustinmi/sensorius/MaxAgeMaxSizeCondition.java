@@ -22,7 +22,12 @@ public class MaxAgeMaxSizeCondition implements FlushCondition {
 	@Override
 	public boolean shouldFlush(int size, long first, long last) {
 		
-		if (!isEnabled) return false;
+		if (!isEnabled) {
+			if (size >= 1000) { // we do not want to proceed to infinity
+				return true;
+			}
+			return false;
+		} 
 				
 		if (size > SENS_BUFF_MAXSIZE) {
 			// if max items in bufer, we flush it in any case

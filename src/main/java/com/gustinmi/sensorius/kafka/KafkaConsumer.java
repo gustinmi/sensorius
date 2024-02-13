@@ -36,7 +36,7 @@ public class KafkaConsumer {
 			SensorRegistry.INSTANCE.addSensorReading(message);
 	        
 	    } catch (Exception e) {
-	        log.warn("Fail to handle message {}.", message);
+	    	logger.warn("Fail to handle message {}.", message);
 	        //TODO for now we leave all alone
 	    }
         

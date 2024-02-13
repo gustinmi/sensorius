@@ -22,7 +22,8 @@ import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -34,12 +35,17 @@ import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.ContainerTestUtils;
 
+import com.gustinmi.sensorius.kafka.KafkaConsumer;
 import com.gustinmi.sensorius.utils.JsonGenerators;
 import com.gustinmi.sensorius.utils.LoggingFactory;
 
 //@EmbeddedKafka(partitions = 1, topics = {"sens_data"})
 @EmbeddedKafka(ports = {1234})
+//@EnableAutoConfiguration(exclude=KafkaConsumer.class)
 public class EmbeddedKafkaTests {
+	
+	@MockBean
+	private KafkaConsumer kafkaConsumer;
 	
 	public static final Logger logger = LoggingFactory.loggerForThisClass();
 	
@@ -51,9 +57,6 @@ public class EmbeddedKafkaTests {
 	public static final String GROUP_ID = "testT";
 	
 	public static final String TEMPLATE_TOPIC_NAME = "sensor-data";
-	
-	//TODO error handling CommonErrorHandler commonErrorHandler = msgListenerContainer.getCommonErrorHandler();
-	
 	
 	public static Map<String, Object> getConsumerProps(String brokers, String group, String autoCommit) {
 		Map<String, Object> props = new HashMap<>();
@@ -167,7 +170,7 @@ public class EmbeddedKafkaTests {
 	        });
 	    }
 		
-		execService.awaitTermination(15_000, TimeUnit.MILLISECONDS);
+		execService.awaitTermination(5_000, TimeUnit.MILLISECONDS);
 		
 		assertTrue(msgArrived.get() == true, "None of the messages arrived to consumers");
 		

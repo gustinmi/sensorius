@@ -6,13 +6,16 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.gustinmi.sensorius.kafka.KafkaConsumer;
 import com.gustinmi.sensorius.utils.JsonGenerators;
 import com.gustinmi.sensorius.utils.LoggingFactory;
 
-@SpringBootTest
+//@SpringBootTest
+//@EnableAutoConfiguration(exclude=KafkaConsumer.class)
 public class SensorDataTests {
 	
 	public static final Logger logger = LoggingFactory.loggerForThisClass();
@@ -65,6 +68,7 @@ public class SensorDataTests {
 
 	@Test
 	void createSensorDataInvalidJson() {
+		@SuppressWarnings("deprecation")
 		final String malformedRaw = getSensorReadingMalformed();
 		final SensorData malformed = SensorData.fromRaw(malformedRaw);
 		assertTrue(malformed == null);

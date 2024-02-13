@@ -9,19 +9,20 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.gustinmi.sensorius.SensorData.SensId;
+import com.gustinmi.sensorius.kafka.KafkaConsumer;
 import com.gustinmi.sensorius.utils.JsonGenerators;
 import com.gustinmi.sensorius.utils.LoggingFactory;
 import com.gustinmi.sensorius.utils.JsonGenerators.SensorMockData;
 
-@SpringBootTest
 public class SensorRegistryTest {
 
 	public static final Logger logger = LoggingFactory.loggerForThisClass();
-	
+		
 	@BeforeEach 
 	public void setupTest() {
 		SensorRegistry.INSTANCE.clear();
@@ -58,12 +59,10 @@ public class SensorRegistryTest {
 	
 	@Test
 	public void testSensorDataInvalid() {
-				
+		@SuppressWarnings("deprecation")
 		final String second = JsonGenerators.getSensorReadingMalformed();
 		SensorRegistry.INSTANCE.addSensorReading(second);
 		assertTrue(SensorRegistry.INSTANCE.getSensorCount() == 0);
-		
-		
 	}
 		
 	@Test
@@ -97,7 +96,6 @@ public class SensorRegistryTest {
 		final String first = JsonGenerators.getReading(now, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(first);
 		final SensorData fromRawFirst = SensorData.fromRaw(first);
-			
 		
 		final String beforeFirst = JsonGenerators.getReading(now-1000, 200, anyFloat());
 		SensorRegistry.INSTANCE.addSensorReading(beforeFirst);

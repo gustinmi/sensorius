@@ -7,9 +7,11 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.gustinmi.sensorius.kafka.KafkaConsumer;
 import com.gustinmi.sensorius.utils.JsonGenerators;
 import com.gustinmi.sensorius.utils.LoggingFactory;
 import com.gustinmi.sensorius.utils.Randomizer;
@@ -18,11 +20,12 @@ import com.gustinmi.sensorius.utils.Randomizer;
  * With this class we are generating load on sensor registry
  * We kind of abuse unitest for simulation
  */
-@SpringBootTest
+//@SpringBootTest
+//@EnableAutoConfiguration(exclude=KafkaConsumer.class)
 public class SensorRegistryLoadTest {
 	
 	public static final Logger logger = LoggingFactory.loggerForThisClass();
-	
+		
 	/* SENSOR1 load settings */
 	public static final int SENS1_MIN_DELAY = 5_00; // lower means faster
 	public static final int SENS1_MAX_DELAY = 7_00; // lower means faster

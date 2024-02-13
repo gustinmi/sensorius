@@ -1,8 +1,6 @@
 package com.gustinmi.sensorius.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +8,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 
 import com.gustinmi.sensorius.App;
 
@@ -23,12 +19,11 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 	
 	
-	@Value("${" + App.SENSORIUS_TOPIC_NAME_CFG + "}")
+	@Value("${com.gustinmi.sensorius.topic-name}")
 	private String topicName;
 	
-	@Value("${" + App.SESNSORIUS_GROUP_NAME_CFG + "}")
+	@Value("${com.gustinmi.sensorius.group-name}")
 	private String groupId;
-
 	
     // Configure Kafka consumer properties
     @Bean

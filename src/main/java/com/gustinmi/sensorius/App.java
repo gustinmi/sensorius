@@ -1,42 +1,47 @@
 package com.gustinmi.sensorius;
 
-
-import java.util.Arrays;
+import java.io.IOException;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import com.gustinmi.sensorius.healtcheck.HealthServer;
 import com.gustinmi.sensorius.utils.LoggingFactory;
-import com.gustinmi.sensorius.healthcheck.HealthServer;
 
+import jakarta.annotation.PreDestroy;
 
+/**
+ * Bootstrap application class
+ * @author mgustin
+ */
 @SpringBootApplication
 public class App {
 	
 	public static final Logger logger = LoggingFactory.loggerForThisClass();
 	
-	public static final String SENSORIUS_TOPIC_NAME_CFG = "com.gustinmi.sensorius.topic-name";
-	public static final String SESNSORIUS_GROUP_NAME_CFG = "com.gustinmi.sensorius.group-name"; 
+	private static HealthServer server = null;
+	
+	@Value("${com.gustinmi.sensorius.health-port}")
+	private Integer health_port;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(App.class, args);
 	}
-
+	
 	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		
 		return (args) -> {
-
+			
 			logger.info("Running app in console mode ...");
 
 			int port = 8097; //TODO move to properties
-		
-			HealthServer server = null;
+			
 			try {
 				server = new HealthServer(port);
 			} catch (IOException e) {
@@ -51,6 +56,12 @@ public class App {
 
 		};
 		
+	}
+	
+	@PreDestroy
+	public void shutdown() {
+		if (server != null) server.stop();
+		logger.info("Shuting down app");
 	}
 	
 	

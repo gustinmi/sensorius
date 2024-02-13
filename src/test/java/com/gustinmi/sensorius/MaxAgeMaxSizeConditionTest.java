@@ -3,14 +3,17 @@ package com.gustinmi.sensorius;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest
+import com.gustinmi.sensorius.kafka.KafkaConsumer;
+
+//@SpringBootTest
+//@EnableAutoConfiguration(exclude=KafkaConsumer.class)
 class MaxAgeMaxSizeConditionTest {
 	
-	
 	public static final FlushCondition flushCondition = new MaxAgeMaxSizeCondition(true);
-	
 	
 	@Test
 	void testEnabled() {
