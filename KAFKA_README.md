@@ -14,6 +14,9 @@
 - [SpringBoot logging](https://www.baeldung.com/spring-boot-logging)
 - [SpringBoot Start project - actuator](https://spring.io/guides/gs/spring-boot)
 - [Spring application.properties](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)
+- [Spring Kafka Error handling](https://medium.com/javarevisited/robust-kafka-consumer-error-handling-on-a-spring-boot-3-application-6fc95e92c956)
+
+
 
 
 ## Installing kafka

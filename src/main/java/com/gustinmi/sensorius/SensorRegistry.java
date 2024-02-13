@@ -4,6 +4,9 @@ import static com.gustinmi.sensorius.utils.CompilationConstants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +26,23 @@ public class SensorRegistry {
     public static final SensorRegistry INSTANCE = new SensorRegistry();
     
     public static volatile FlushCondition flushCondition;
+
+    private final AtomicBoolean initialized = new AtomicBoolean(false);
     
-	private final Map<SensId, SortedSet<SensorData>> sensors = new HashMap<SensorData.SensId, SortedSet<SensorData>>(1000);
+    /** A hash table supporting full concurrency of retrievals and high expected concurrency for updates. */
+	private final Map<SensId, SortedSet<SensorData>> sensors = new ConcurrentHashMap<SensorData.SensId, SortedSet<SensorData>>(1000);
 	
 	private SensorRegistry() {
 		flushCondition = new MaxAgeMaxSizeCondition(false);
 	}
 	
 	public void initialize(boolean shouldFlush)	{
+
+ 		if (initialized.getAndSet(true)) {
+            log.severe("Already initialized");
+            return;
+        }
+
 		if (shouldFlush) {
 			logger.warn("Turning on flush mode");
 			flushCondition = new MaxAgeMaxSizeCondition(true);
@@ -54,7 +66,9 @@ public class SensorRegistry {
 			if (INFO_SENSOR_REGISTRY) logger.info("Sensor {} already present, adding reading", sensData.getId().toString());
 			
 			final SortedSet<SensorData> readingsData = sensors.get(sensData.getId());
-			readingsData.add(sensData); // will skip readings with same timestamp
+			synchronized (readingsData) { 
+				readingsData.add(sensData); // will skip readings with same timestamp
+			}
 			
 			if (INFO_SENSOR_REGISTRY) logger.info("Sensor has total of {} readings", readingsData.size());
 			
@@ -62,7 +76,13 @@ public class SensorRegistry {
 			long currReadingTsMs = sensData.getTimestamp();
 			long firstReadingTsMs = readingsData.first().getTimestamp();
 			final boolean shouldFlush = flushCondition.shouldFlush(readingsData.size(), firstReadingTsMs, currReadingTsMs);
-			if (!shouldFlush) return;
+			if (!shouldFlush){
+				logger.info("Throwing away sensor data because flushing is OFF");				
+				synchronized (readingsData) { 
+					readingsData.clear(); 
+				}
+				return;
+			}
 
 			logger.info("Flushing sensor data for {}", sensData.getId().toString());
 			
@@ -73,14 +93,13 @@ public class SensorRegistry {
 			}
 			readingsData.clear(); //TODO check threading 
 			
+			// NO NEED TO LOCK, we are working with copy of data
 			final List<SensorData> uniqList = extractUniqReadings(copyOfDataset);
-			
 			try {
 				final int numOfSaved = TimeseriesDb.INSTANCE.flushToDb(uniqList);
 				if (numOfSaved != uniqList.size())
 					logger.warn("Not all items flushed to database. Diff is {}", uniqList.size() - numOfSaved);
 				if (INFO_SENSOR_REGISTRY) logger.info("Flushed {} items", numOfSaved);
-				
 				
 			} catch (RuntimeException e) {
 				logger.error("Exception while saving new readings into timeseries db: " + e.toString(), e);
@@ -93,7 +112,7 @@ public class SensorRegistry {
 			
 			final SortedSet<SensorData> newDataSet = new TreeSet<SensorData>();
 			newDataSet.add(sensData);
-			sensors.put(sensData.getId(), newDataSet);
+			sensors.putIfAbsent(sensData.getId(), newDataSet);
 			
 			// IMPORTANT:  since this is fresh data, there is no need to save to database anythings
 		}
@@ -133,17 +152,23 @@ public class SensorRegistry {
 	
 	
 	public void clear() {
-		sensors.clear();
+		synchronized(sensors){
+			sensors.clear();
+		}
 	}
 		
 	public int getSensorCount() {
-		return sensors.keySet().size();
+		int size;
+		synchronized(sensors){
+			size = sensors.keySet().size();
+		}
+		return size;
 	}
 	
 	public List<SensorData> getOrderedDataForSensor(final SensId id) {
-		synchronized (sensors) {
-			final SortedSet<SensorData> sortedSet = sensors.get(id);
-			final List<SensorData> orderList = new ArrayList<SensorData>(sortedSet.size());
+		final SortedSet<SensorData> sortedSet = sensors.get(id);
+		final List<SensorData> orderList = new ArrayList<SensorData>(sortedSet.size());
+		synchronized (sortedSet) { // lock so we do not get concurrent modification exception if other thread is modifying collection
 			for (final Iterator<SensorData> iterator = sortedSet.iterator(); iterator.hasNext();) {
 				final SensorData sensorData = iterator.next();
 				orderList.add(sensorData);
@@ -151,7 +176,5 @@ public class SensorRegistry {
 			return orderList;	
 		}
 	}	
-	
-	
 
 }

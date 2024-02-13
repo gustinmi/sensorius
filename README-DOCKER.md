@@ -15,3 +15,16 @@ docker build -t sensorius .
 docker run sensorius
 
 ```
+
+## Docker compose
+
+### check config
+
+```bash
+docker-compose config
+```
+
+### build image
+```bash
+docker-compose up --build
+```

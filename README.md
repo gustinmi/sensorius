@@ -39,7 +39,7 @@ I prepared simple load simulation inside unit tests. We can adjust frequency of 
 ## Code instrumentation
 
 - all important parts of code are configurable
-- final keyword is used where ever possible to minimise logical errors, reassignments, etc.
+- final keyword is used where ever possible to trade logical errors for syntax errors  (reassignments, missing branch statements)
 - conditional compilations is used for logging. Usually on high loads, we do not verbose or info log.
 - there is possibility to use debugging in all classes comprising application (without external dependency)
 

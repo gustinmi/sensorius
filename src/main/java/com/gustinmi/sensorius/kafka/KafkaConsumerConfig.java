@@ -38,8 +38,8 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.VoidDeserializer");
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-        // Additional consumer properties
-		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+        
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true"); // enabling autocommit, we do not commit offset by ourselfs
 		props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10");
 		props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
         
@@ -51,6 +51,14 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        
+
+        /*
+            By configuring the ConcurrentKafkaListenerContainerFactory with the desired concurrency level, 
+            you can achieve parallel consumption of Kafka messages in a Java Spring Boot application. 
+            Adjust the concurrency value based on your application's requirements and the capacity of your Kafka cluster.
+        */
+
         factory.setConcurrency(3); // Set the number of consumer threads
         return factory;
     }
