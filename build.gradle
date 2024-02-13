@@ -8,12 +8,12 @@ group = 'com.gustinmi'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
+	sourceCompatibility = '17'
 }
 
 bootJar {
     manifest {
-    	attributes 'Start-Class': 'com.naka.app.CryptoTransactionsApplication'
+    	attributes 'Start-Class': 'com.gustinmi.sensorius.App'
     }
 }
 
