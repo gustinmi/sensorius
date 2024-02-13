@@ -13,5 +13,10 @@
     "name": "com.gustinmi.sensorius.health-port",
     "type": "java.lang.Integer",
     "description": "A description for 'com.gustinmi.sensorius.health-port'"
+  },
+  {
+    "name": "com.gustinmi.sensorius.consumer-concurrency",
+    "type": "java.lang.Integer",
+    "description": "A description for 'com.gustinmi.sensorius.consumer-concurrency'"
   }
 ]}

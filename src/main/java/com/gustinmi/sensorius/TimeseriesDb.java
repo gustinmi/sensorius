@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 
 import com.gustinmi.sensorius.utils.LoggingFactory;
 
+/**
+ * Mock implementation
+ */
 public class TimeseriesDb {
 	
 	public static final Logger logger = LoggingFactory.loggerForThisClass();

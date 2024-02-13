@@ -30,7 +30,7 @@ public class SensorRegistry {
 	private final Map<SensId, SortedSet<SensorData>> sensors = new ConcurrentHashMap<SensorData.SensId, SortedSet<SensorData>>(1000);
 	
 	private SensorRegistry() {
-		flushCondition = new MaxAgeMaxSizeCondition(false);
+		flushCondition = new MaxAgeMaxSizeCondition(false); // default value  
 	}
 	
 	public void initialize(boolean shouldFlush)	{
@@ -50,7 +50,7 @@ public class SensorRegistry {
 	/** Add new sensor reading from kafka consumer
 	 * @param rawSensData
 	 */
-	public void addSensorReading(final String rawSensData) { // TODO change method to return object, its elegant for testing
+	public void addSensorReading(final String rawSensData) { 
 		
 		logger.info("Considering sensor unchecked reading {}", rawSensData);
 		
@@ -114,7 +114,7 @@ public class SensorRegistry {
 		
 		if (INFO_SENSOR_REGISTRY) logger.info("Total time processing {} ms", RealtimeRetriever.currentTimeMillis() - tsStart);
 		
-		return;
+		return; // TODO change method to return object, its elegant for testing
 		
 	}
 	

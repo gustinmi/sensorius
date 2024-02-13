@@ -7,16 +7,14 @@
 - [Embedded kafka](https://docs.spring.io/spring-kafka/reference/testing.html#embedded-kafka-annotation)
 - [Influx](https://medium.berkayozcan.com/connecting-an-influxdb-database-to-a-spring-boot-application-81f53ead3c7)
 - [Influx sample](https://medium.com/trabe/monitoring-humidity-and-temperature-with-grafana-influxdb-and-orange-pi-9680046c70c)
-- [Stress testing](https://www.blazemeter.com/blog/kafka-testing)
 - [SpringBoot Docker](https://medium.com/@bubu.tripathy/dockerizing-your-spring-boot-application-75bf2c6568d0)
-- [Kafka Docs](https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#assign(java.util.Collection))
-
 - [SpringBoot logging](https://www.baeldung.com/spring-boot-logging)
 - [SpringBoot Start project - actuator](https://spring.io/guides/gs/spring-boot)
-- [Spring application.properties](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)
+- [SpringBoot application.properties](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)
+- [Spring Kafka application.properties](https://gist.github.com/geunho/77f3f9a112ea327457353aa407328771)
 - [Spring Kafka Error handling](https://medium.com/javarevisited/robust-kafka-consumer-error-handling-on-a-spring-boot-3-application-6fc95e92c956)
-
-
+- [Kafka Docs](https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#assign(java.util.Collection))
+- [Stress testing](https://www.blazemeter.com/blog/kafka-testing)
 
 
 ## Installing kafka

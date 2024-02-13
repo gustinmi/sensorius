@@ -39,11 +39,9 @@ public class App {
 		return (args) -> {
 			
 			logger.info("Running app in console mode ...");
-
-			int port = 8097; //TODO move to properties
 			
 			try {
-				server = new HealthServer(port);
+				server = new HealthServer(health_port);
 			} catch (IOException e) {
 				System.err.println(e);
 			}

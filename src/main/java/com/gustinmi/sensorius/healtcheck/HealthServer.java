@@ -35,7 +35,6 @@ public class HealthServer {
 		try {
 			System.out.println("starting healtcheck HTTP Server on port " + this.port);
 			serverSocket = new ServerSocket(this.port);
-			// serverSocket.setSoTimeout(timeout); // 3 minutes timeout
 		} catch (IOException e) {
 			System.err.println(e);
 			throw e;
@@ -58,54 +57,59 @@ public class HealthServer {
 				System.err.print("Socket timeout - we close down server");
 				break;
 			} 
-			
-			if (RealtimeRetriever.currentTimeMillis() - timeMilis < MIN_THROTTLE_MS) return; // basic bounce (DoS protection)
+
+			final boolean isThrottled = (RealtimeRetriever.currentTimeMillis() - timeMilis < MIN_THROTTLE_MS); // basic bounce off (DoS protection)	
 			
 			final PrintWriter clientSocketOut = new PrintWriter(clientSocket.getOutputStream(), true);
 
 			try {
-				int dataBuffer;
 				
-				HttpPartType currentPart = HttpPartType.REQUEST_LINE;
-				final InputStream in = clientSocket.getInputStream();
-				while ((dataBuffer = in.read()) != -1) {
+				if (!isThrottled) {
+					int dataBuffer;
+					HttpPartType currentPart = HttpPartType.REQUEST_LINE;
+					final InputStream in = clientSocket.getInputStream();
+					while ((dataBuffer = in.read()) != -1) {
 
-					// separator characters	
-					if (dataBuffer == CR) { // CR
-						
-						if (in.read() == LF) { // read in advance to check if LF 
+						// separator characters	- we are ot saving those anyway
+						if (dataBuffer == CR) { // CR
 							
-							final String lineContent = httpRawLine.toString();
-							System.out.println(lineContent);
-							if (lineContent.length() == 0) break; // EOF
+							if (in.read() == LF) { // read in advance to check if LF 
+								
+								final String lineContent = httpRawLine.toString();
+								System.out.println(lineContent);
+								if (lineContent.length() == 0) break; // EOF
+								
+								// We have end of line
+								request.addPart(new HttpPart(currentPart, lineContent)); 
+								httpRawLine.setLength(0); // reset line
 							
-							// We have end of line
-							request.addPart(new HttpPart(currentPart, lineContent)); 
-							httpRawLine.setLength(0); // reset line
-						
-							if (currentPart.equals(HttpPartType.REQUEST_LINE)) // switch parts, there is onyl one request line
-								currentPart = HttpPartType.HEADER;
+								if (currentPart.equals(HttpPartType.REQUEST_LINE)) // switch parts, there is onyl one request line
+									currentPart = HttpPartType.HEADER;
 
+							}
+							
+						} else { // appending mode 
+							httpRawLine.append((char) dataBuffer);
 						}
 						
-					} else { // appending mode 
-						httpRawLine.append((char) dataBuffer);
-					}
-					
-				} // end of stream reading while
+					} // end of stream reading while
+				}
 				
 				// response headers
 				clientSocketOut.println("HTTP/1.1 200 OK"); // Status line
 				clientSocketOut.println("Connection: close"); // Headers
 				clientSocketOut.println(); // must have empty line for HTTP headers end
 				
-				// TODO add healthcheck
-				final Runtime runtime = Runtime.getRuntime();
-		        final String memStat = (String.format("Memory free: %.3f MB, total: %.3f MB, max: %.3f MB", runtime.freeMemory() / 1048576.0, runtime.totalMemory() / 1048576.0, runtime.maxMemory() / 1048576.0));
-		        clientSocketOut.println(memStat);
-      
-		        final String sensNum = (String.format("Number of detected sensors %s", SensorRegistry.INSTANCE.getSensorCount()));
-		        clientSocketOut.println(sensNum);
+				if (!isThrottled) {
+					final Runtime runtime = Runtime.getRuntime();
+			        final String memStat = (String.format("Memory free: %.3f MB, total: %.3f MB, max: %.3f MB", runtime.freeMemory() / 1048576.0, runtime.totalMemory() / 1048576.0, runtime.maxMemory() / 1048576.0));
+			        clientSocketOut.println(memStat);
+	      
+			        final String sensNum = (String.format("Number of detected sensors %s", SensorRegistry.INSTANCE.getSensorCount()));
+			        clientSocketOut.println(sensNum);
+			        
+			        //TODO add other vital information
+				}
 		        
 		        clientSocketOut.println();
 				clientSocketOut.flush(); 
@@ -128,6 +132,7 @@ public class HealthServer {
 
 	public void stop() {
 		try {
+			System.out.println("Stopping health server");
 			if (clientSocket != null) clientSocket.close();
 		} catch (Exception e) {} // we dont care
 		

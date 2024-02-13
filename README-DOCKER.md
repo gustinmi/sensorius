@@ -13,7 +13,6 @@
 docker build -f Dockerfile-build -t sensorius .
 docker build -t sensorius .
 docker run sensorius
-
 ```
 
 ## Docker compose
