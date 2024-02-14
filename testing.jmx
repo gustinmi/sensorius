@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -16,7 +16,7 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <stringProp name="LoopController.loops">10</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
@@ -42,7 +42,53 @@
           <stringProp name="serializerValue">org.apache.kafka.common.serialization.StringSerializer</stringProp>
         </com.di.jmeter.kafka.config.KafkaProducerConfig>
         <hashTree/>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler1" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">def currentTimeMillis = System.currentTimeMillis();
+
+def elevationRandom = new Random()
+def elevation = elevationRandom.nextInt(205 - 200) + 200;
+
+def tempRandom = new Random()
+def temp = tempRandom.nextInt(37 - 22) + 22;
+
+def reading = new StringBuilder();
+reading.append(&quot;{&quot;);
+
+// ID 
+reading.append(&quot;\&quot;longitude\&quot;: \&quot;46°04&apos;53.6\\\&quot;N\&quot;&quot;);
+reading.append(&quot;,\&quot;latitude\&quot;: \&quot;14°29&apos;43.5\\\&quot;E\&quot;&quot;);
+reading.append(&quot;,\&quot;elevation\&quot;: &quot; + String.format(&quot;%s&quot;, elevation));
+
+// DATA
+reading.append(&quot;,\&quot;timestamp\&quot;: &quot; + String.format(&quot;%s&quot;, currentTimeMillis));
+reading.append(&quot;,\&quot;temperature\&quot;: &quot; + String.format(&quot;%s.01&quot;, temp));
+reading.append(&quot;}&quot;);
+
+def jsonSensorData = reading.toString();
+
+log.info(&quot;jsonSensorData: &quot; + jsonSensorData);
+vars.put(&quot;jsonSensorData&quot;, jsonSensorData);</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="jp@gc - Dummy Sampler" enabled="true">
+          <boolProp name="WAITING">true</boolProp>
+          <boolProp name="SUCCESFULL">true</boolProp>
+          <stringProp name="RESPONSE_CODE">200</stringProp>
+          <stringProp name="RESPONSE_MESSAGE">OK</stringProp>
+          <stringProp name="REQUEST_DATA">requesteee</stringProp>
+          <stringProp name="RESPONSE_DATA">${jsonSensorData}</stringProp>
+          <stringProp name="RESPONSE_TIME">${__Random(50,500)}</stringProp>
+          <stringProp name="LATENCY">${__Random(1,50)}</stringProp>
+          <stringProp name="CONNECT">${__Random(1,5)}</stringProp>
+          <stringProp name="URL"></stringProp>
+          <stringProp name="RESULT_CLASS">org.apache.jmeter.samplers.SampleResult</stringProp>
+        </kg.apc.jmeter.samplers.DummySampler>
+        <hashTree/>
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler1" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1707765126101,&quot;temperature&quot;: 0.14}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -56,7 +102,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler2" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler2" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1707765127101,&quot;temperature&quot;: 0.14}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -70,7 +116,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler3" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler3" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1707765186101,&quot;temperature&quot;: 0.15}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -84,7 +130,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler4" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler4" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1707765926101,&quot;temperature&quot;: 0.16}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -98,7 +144,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler5" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler5" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1707795126101,&quot;temperature&quot;: 0.17}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -112,7 +158,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler6" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler6" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1707865126101,&quot;temperature&quot;: 0.18}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -126,7 +172,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler7" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler7" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1708765126101,&quot;temperature&quot;: 0.19}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -140,7 +186,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler8" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler8" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1708165126101,&quot;temperature&quot;: 0.20}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -154,7 +200,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler9" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler9" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1708265126101,&quot;temperature&quot;: 0.21}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -168,7 +214,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler10" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler10" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1708365126101,&quot;temperature&quot;: 0.22}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -182,7 +228,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler11" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler11" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 1708465126101,&quot;temperature&quot;: 0.23}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -196,7 +242,7 @@
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler12" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler12" enabled="false">
           <stringProp name="kafkaMessage">{&quot;longitude&quot;: &quot;46°04&apos;53.6\&quot;N&quot;,&quot;latitude&quot;: &quot;14°29&apos;43.5\&quot;E&quot;,&quot;elevation&quot;: 300,&quot;timestamp&quot;: 170857765126101,&quot;temperature&quot;: 0.24}</stringProp>
           <stringProp name="kafkaMessageKey"></stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
