@@ -2,16 +2,15 @@
 
 ## Facts from requirements
 
-- Application is real-time so we process data in best effort manner. Main assumption is, that data that is not arriving in time succession should be discarded
-	- This means we discard old stale data, usually due to some sensor was offline for considerable amount of time or had latency problems
-- Producers specify no key so hence there is round robin producing to partitions (as per spec)
-- Changing anything on Kafka configuration or producer side is out of scope (topic configuration, message format, keys, headers)
-- Since we are only interested in change in temperature, we avoid save same readings 
+- Application is real-time so we process data in best effort manner. Main assumption is that if data  is not arriving in time succession it should be discarded. Only newer reading will be processed.
+- Producers specify no key for messages so we have round robin producing to partitions (as per Kafka spec)
+- Changing anything on Kafka configuration or on producer side is out of scope (topic configuration, message format, keys, headers)
+- Since we are only interested in change in temperature, we avoid saving same readings 
 
 ## Implementation decisions based on input document
 
 - Real-time data is processed in time-based frames (if same reading is repeated in whole time frame, only 1 reading is actually saved)
-- If however sensors readings is increased (bigger resolution), we save when readings count reaches certain treshold
+- If however sensors readings is increased (bigger resolution), we save when readings count reaches certain threshold
 - Due to high partition count we'll use concurrent listeners.
 - Core engine was detached from Kafka in order for us to be able to use simulation engines in junit tests.
 - Because of the performance requirements, core functionality is more or less written in POJOs. In this was performance and memory consumption improvements will be be faster.
@@ -23,9 +22,8 @@
 ###  Points for improvements 
 
 - More concurrency
-	- currently processing of messages and saving to timeseries db is done on same thread (although in thread save manner). Perhaps there should be per sensor backgroud flush detection
-	- perhaps timeseries db would have its own background thread to process buffer of persistence candidates. This depends on the speed of timeseries db.
-- Add spring metrics plugin (Actuator) for beter integration into kubernetes (healtcheck, probe and so on ...)
+	- currently processing of messages and saving to timeseries db is done on same thread (although in thread save manner). Perhaps timeseries db would have its own background thread to process buffers. This could also depend on the speed of timeseries db.
+- Consider adding Spring metrics plugin (Actuator) for beter integration into kubernetes (healtcheck, probe and so on ...)
 - Extend gracefull shutdown listener for all components. Kafka listener should send everyting to timeseriesDB, and timeseries should flush all it has in the case of shutdown
 - Choose some lightning fast JSON processing library
 - A session with VisualVM or JMX console would be necessary to identify potential memory leaks and to minimise GC cycles 
@@ -118,6 +116,3 @@ docker-compose config
 ```bash
 docker-compose up --build
 ```
-
-
-
