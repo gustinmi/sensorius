@@ -112,7 +112,7 @@ public class SensorRegistry {
 			// IMPORTANT:  since this is fresh data, there is no need to save to database anythings
 		}
 		
-		if (INFO_SENSOR_REGISTRY) logger.info("Total time processing {} ms", RealtimeRetriever.currentTimeMillis() - tsStart);
+		if (INFO_PROCESSING_TIME) logger.info("Total time processing {} ms", RealtimeRetriever.currentTimeMillis() - tsStart);
 		
 		return; // TODO change method to return object, its elegant for testing
 		

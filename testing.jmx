@@ -303,7 +303,7 @@ vars.put(&quot;jsonSensorData&quot;, jsonSensorData);</stringProp>
           <hashTree/>
           <GaussianRandomTimer guiclass="GaussianRandomTimerGui" testclass="GaussianRandomTimer" testname="Gaussian Random Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">1</stringProp>
-            <stringProp name="RandomTimer.range">3</stringProp>
+            <stringProp name="RandomTimer.range">5</stringProp>
           </GaussianRandomTimer>
           <hashTree/>
         </hashTree>

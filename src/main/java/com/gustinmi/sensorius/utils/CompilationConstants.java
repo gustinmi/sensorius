@@ -9,6 +9,8 @@ public class CompilationConstants {
 	/** LOG add procedure of sensor registry */
 	public static final boolean INFO_SENSOR_REGISTRY = false;
 	
+	public static final boolean INFO_PROCESSING_TIME = true;
+	
 	/** LOG details of time series db */
 	public static final boolean INFO_TIMESERIES = true;
 	
