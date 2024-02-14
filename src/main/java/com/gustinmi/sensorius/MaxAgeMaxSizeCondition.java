@@ -13,7 +13,7 @@ public class MaxAgeMaxSizeCondition implements FlushCondition {
 	public static final int SENS_BUFF_MAXSIZE = 10;
 	
 	//TODO move to spring config
-	public static final int SENS_BUFF_MAXAGE_MS = 5_000;
+	public static final int SENS_BUFF_MAXAGE_MS = 15_000;
 	
 	private final boolean isEnabled; 
 	
@@ -29,9 +29,6 @@ public class MaxAgeMaxSizeCondition implements FlushCondition {
 	public boolean shouldFlush(int size, long first, long last) {
 		
 		if (!isEnabled) {
-			if (size >= 1000) { // we do not want to proceed to infinity
-				return true;
-			}
 			return false;
 		} 
 				

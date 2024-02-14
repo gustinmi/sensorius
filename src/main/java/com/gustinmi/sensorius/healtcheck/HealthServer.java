@@ -33,6 +33,7 @@ public class HealthServer {
 		this.port = port;
 		
 		try {
+			//TODO move this to logger
 			System.out.println("starting healtcheck HTTP Server on port " + this.port);
 			serverSocket = new ServerSocket(this.port);
 		} catch (IOException e) {
