@@ -9,6 +9,7 @@
 - [Influx sample](https://medium.com/trabe/monitoring-humidity-and-temperature-with-grafana-influxdb-and-orange-pi-9680046c70c)
 - [SpringBoot Docker](https://medium.com/@bubu.tripathy/dockerizing-your-spring-boot-application-75bf2c6568d0)
 - [SpringBoot logging](https://www.baeldung.com/spring-boot-logging)
+- [SpringBoot Kafka] (https://www.baeldung.com/spring-kafka)
 - [SpringBoot Start project - actuator](https://spring.io/guides/gs/spring-boot)
 - [SpringBoot application.properties](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)
 - [Spring Kafka application.properties](https://gist.github.com/geunho/77f3f9a112ea327457353aa407328771)

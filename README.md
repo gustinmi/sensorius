@@ -13,9 +13,9 @@
 - If however sensors readings is increased (bigger resolution), we save when reading count reaches treshold
 - Due to high partition count we'll use concurrent listeners.
 - Core engine was detached from Kafka in order for us to be able to use simulation engines in junit tests.
-- There was no time to benchmark Spring, so core functionality is more or less written in POJOs. It should be faster.
+- Because of the performance requirements, core functionality is more or less written in POJOs. In this was performance and memory consumption improvements will be be faster.
   for similar reasons, no spring framework libraries were used (like quartz for cronjob like tasks)
-- Since performance is most important, i decided to go with console profile (no embedded webserver). This will of course mean some of the spring monitoring functionalities will not be available.
+- Since performance is most important, i decided to go with SpringBoot console runner  (without spring web). This will of course mean some of the spring monitoring functionalities will not be available.
 - Incremental testing (no Kafka, embedded Kafka broker, real Kafka broker); all important components can be tested in standalone mode.
 - basic support for gracefull shutdown
 
@@ -24,9 +24,10 @@
 - More concurrency
 	- currently processing of messages and saving to timeseries db is done on same thread (although in thread save manner). Perhaps there should be per sensor backgroud flush detection
 	- perhaps timeseries db would have its own background thread to process buffer of persistence candidates
-- Add spring metrics plugin (actuator) for beter integration into kubernetes (healtcheck, probe and so on ...)
-- Extend gracefull shutdown listener for all components. Kafka listener should send everyting to timeseriesDB, and timeseries should flush all it has
-- Choose some lightning fast json processing library
+- Add spring metrics plugin (actuator) for beter integration into kubernetes (healthcheck, probe and so on ...)
+- Extend gracefull shutdown listener for all components. Kafka listener should send everything to timeseriesDB, and timeseries should flush all it has
+- Choose some lightning fast JSON processing library
+- A session with VisualVM or JMX console would be necessary to identify potential memory leaks and to minimise GC cycles 
 
 ## Code quality tools
 
