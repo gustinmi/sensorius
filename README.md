@@ -26,7 +26,7 @@
 - Consider adding Spring metrics plugin (Actuator) for beter integration into kubernetes (healtcheck, probe and so on ...)
 - Extend gracefull shutdown listener for all components. Kafka listener should send everyting to timeseriesDB, and timeseries should flush all it has in the case of shutdown
 - Choose some lightning fast JSON processing library
-- A session with VisualVM or JMX console would be necessary to identify potential memory leaks and to minimise GC cycles 
+- Further sessions with VisualVM or JMX console would improve lag when load is high.
 
 ## Code quality tools
 
