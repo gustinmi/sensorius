@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import com.gustinmi.sensorius.utils.LoggingFactory;
 
 /**
- * Mock implementation
+ * Mock implementation of timeseries db adapter (like influx)
+ * @see https://medium.berkayozcan.com/connecting-an-influxdb-database-to-a-spring-boot-application-81f53ead3c7
+ * @see https://medium.com/trabe/monitoring-humidity-and-temperature-with-grafana-influxdb-and-orange-pi-9680046c70c
  */
 public class TimeseriesDb {
 	
@@ -22,8 +24,8 @@ public class TimeseriesDb {
 	
 	/**
 	 * We are retrieving copy a list so iterating is not a issue if data changes
-	 * Data was also filtered before so we save what we get
-	 * Ordering is actually not important as long as we have creation date as a index in database 
+	 * Data was also filtered before so we save what we get here
+	 * Ordering is actually not important as long as we have creationDate as a index in database 
 	 * @param dataList
 	 * @return 
 	 */

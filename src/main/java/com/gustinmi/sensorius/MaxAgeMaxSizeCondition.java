@@ -4,9 +4,15 @@ interface FlushCondition {
 	boolean shouldFlush(int size, long first, long last);
 }
 
+/** Currently this is only condition. It flushes bufer based on:
+ * 1. time frame or 
+ * 2. (if density increases) based on number of items in buffer */
 public class MaxAgeMaxSizeCondition implements FlushCondition {
 	
+	//TODO move to spring config
 	public static final int SENS_BUFF_MAXSIZE = 10;
+	
+	//TODO move to spring config
 	public static final int SENS_BUFF_MAXAGE_MS = 5_000;
 	
 	private final boolean isEnabled; 
