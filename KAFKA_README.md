@@ -36,10 +36,7 @@ bin/kafka-server-start.sh config/kraft/server.properties
 bin/kafka-topics.sh --create --topic sensor-data --bootstrap-server localhost:9092
 
 # create topic with partitions
-bin/kafka-topics.sh --create --partitions 10 --topic sensor-data --bootstrap-server localhost:9092
-
 bin/kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic sensor-data --bootstrap-server localhost:9092
-
 
 # produce some messages
 bin/kafka-console-producer.sh --topic demo-messages --bootstrap-server localhost:9092
@@ -56,7 +53,7 @@ bin/kafka-console-consumer.sh --topic demo-messages --from-beginning --bootstrap
 
 ### Troubleshooting kafka conectivity
 
-#### Broker not reachable from java process
+#### Broker not reachable from java process ( a WSL issue)
 
 Check binded port of kafka
 

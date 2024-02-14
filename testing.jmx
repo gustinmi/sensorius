@@ -215,9 +215,9 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">100</stringProp>
+          <stringProp name="LoopController.loops">2000</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">5</stringProp>
+        <stringProp name="ThreadGroup.num_threads">70</stringProp>
         <stringProp name="ThreadGroup.ramp_time">10</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -249,10 +249,10 @@
           <stringProp name="script">def currentTimeMillis = System.currentTimeMillis();
 
 def elevationRandom = new Random()
-def elevation = elevationRandom.nextInt(225 - 200) + 200;
+def elevation = elevationRandom.nextInt(245 - 200) + 200;  // bigger number means more sensors
 
 def tempRandom = new Random()
-def temp = tempRandom.nextInt(37 - 22) + 22;
+def temp = tempRandom.nextInt(137 - 22) + 22;  // moe variation in temperature
 
 def reading = new StringBuilder();
 reading.append(&quot;{&quot;);
@@ -297,9 +297,14 @@ vars.put(&quot;jsonSensorData&quot;, jsonSensorData);</stringProp>
           <stringProp name="partitionString"></stringProp>
         </com.di.jmeter.kafka.sampler.KafkaProducerSampler>
         <hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-            <stringProp name="ConstantTimer.delay">50</stringProp>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="false">
+            <stringProp name="ConstantTimer.delay">1</stringProp>
           </ConstantTimer>
+          <hashTree/>
+          <GaussianRandomTimer guiclass="GaussianRandomTimerGui" testclass="GaussianRandomTimer" testname="Gaussian Random Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">1</stringProp>
+            <stringProp name="RandomTimer.range">3</stringProp>
+          </GaussianRandomTimer>
           <hashTree/>
         </hashTree>
       </hashTree>

@@ -7,7 +7,7 @@ package com.gustinmi.sensorius.utils;
 public class CompilationConstants {
 	
 	/** LOG add procedure of sensor registry */
-	public static final boolean INFO_SENSOR_REGISTRY = true;
+	public static final boolean INFO_SENSOR_REGISTRY = false;
 	
 	/** LOG details of time series db */
 	public static final boolean INFO_TIMESERIES = true;

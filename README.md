@@ -54,6 +54,8 @@ I prepared simple load simulation inside unit tests. We can adjust frequency of 
 
 ## Tools used
 
+Developed on Windows with WSL2 running ubuntu 22.04
+
 - Eclipse with STS Spring Tools v4
 - JMeter (DI kafka plugin, dummy sampler plugin)
 - Docker 
@@ -77,5 +79,45 @@ I prepared simple load simulation inside unit tests. We can adjust frequency of 
 - [Spring Kafka Error handling](https://medium.com/javarevisited/robust-kafka-consumer-error-handling-on-a-spring-boot-3-application-6fc95e92c956)
 - [Kafka Docs](https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#assign(java.util.Collection))
 - [Stress testing](https://www.blazemeter.com/blog/kafka-testing)
+
+### Running app
+
+#### Gradle tasks
+
+```
+./gradlew clean
+./gradlew bootJar
+./gradlew bootRun
+```
+
+#### Running and building inside docker
+
+```
+docker build -t sensorius .
+docker build -t sensorius .
+docker run sensorius
+```
+
+#### Building docker image simplistic
+
+```
+docker build -f Dockerfile-build -t sensorius .
+docker build -t sensorius .
+docker run sensorius
+```
+
+#### Docker compose
+
+### check config
+
+```bash
+docker-compose config
+```
+
+### build image
+```bash
+docker-compose up --build
+```
+
 
 
